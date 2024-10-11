@@ -1,6 +1,6 @@
 <template>
     <div class="Newest">
-      <UserList
+      <ArticleList
         v-for="(item, index) in Obj"
         :key="index"
         :Obj="item"
@@ -10,13 +10,13 @@
   
   <script>
   // @ 是 /src 的别名
-  import UserList from '@/components/UserList.vue'
+  import ArticleList from '@/components/ArticleList.vue'
   import axios from 'axios'
   
   export default {
     name: 'NewestView',
     components: {
-      UserList
+      ArticleList
     },
   
     data() {
@@ -31,7 +31,7 @@
         let list = [];
         let newObjects = {};
   
-        axios.get('http://localhost:8087/findByTime')
+        axios.get('http://localhost:8087/getAllArticlesByTime')
           .then(res => {
             list = res.data;
   

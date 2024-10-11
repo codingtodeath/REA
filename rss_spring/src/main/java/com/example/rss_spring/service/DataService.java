@@ -1,29 +1,78 @@
 package com.example.rss_spring.service;
 
 import com.example.rss_spring.mapper.DataMapper;
+import com.example.rss_spring.model.Article;
 import com.example.rss_spring.model.RssFeed;
 
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
+import java.net.URL;
+
+import jakarta.annotation.PostConstruct;
+import lombok.Data;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class DataService {
     @Autowired(required = false)
     private DataMapper dataMapper;
 
+//    @Data
+    private ArrayList<RssFeed> feedArray;
+//
+//    @Data
+    private ArrayList<Article> articleArray;
 
-    //  ！！！以下是Rss源的相关操作！！！
-    public String insertFeed(int id, String name, String url) {
-        dataMapper.insertFeed(id, name, url);
-        return "succeed";
+    public DataService(){
+
     }
 
-    public List<RssFeed> getAllFeeds() {
+    // 使用 @PostConstruct 注解的方法来初始化 feedArray
+    @PostConstruct
+    public void init() {
+        feedArray = getAllFeeds();
+        for(RssFeed element:feedArray) {
+            parseFeed(element.getUrl());
+        }
+    }
+
+    public void parseFeed(String url){
+        SyndFeed parseFeed;
+        System.out.println("parsing......   ");
+        try{
+            parseFeed = new SyndFeedInput().build(new XmlReader(new URL(url)));
+        }
+        catch (Exception e){
+            return;
+        }
+        List<SyndEntry> list = parseFeed.getEntries();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //遍历这个rss源的所有文章
+        for (SyndEntry element: list){
+            // 设置日期格式
+            // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            // 转换时间
+            dataMapper.insertArticle(element.getTitle(), element.getDescription().getValue(), element.getLink(),element.getAuthor(), simpleDateFormat.format(element.getPublishedDate()));
+        }
+    }
+
+    //  ！！！以下是Rss源的相关操作！！！
+    public void insertFeed(String name, String url) {
+        dataMapper.insertFeed(name, url);
+        parseFeed(url);
+    }
+
+    public ArrayList<RssFeed> getAllFeeds() {
         return dataMapper.getAllFeeds();
     }
 
@@ -36,7 +85,12 @@ public class DataService {
     }
 
 
+    //  ！！！以下是文章的相关操作！！！
+    public void insertArticle(String title, String description, String url, String author, String time){
+        dataMapper.insertArticle(title, description, url, author, time);
+    }
 
+    public ArrayList<Article> getAllArticlesByTime(){ return dataMapper.getAllArticlesByTime();}
 
 //
 //    /**

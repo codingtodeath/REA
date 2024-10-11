@@ -6,19 +6,19 @@
       :Obj="item"
     />
   </div>
+
 </template>
 
 <script>
 // @ 是 /src 的别名
 import UserList from '@/components/UserList.vue'
 import axios from 'axios'
-import InputText from '@/components/InputText.vue'
+
 
 export default {
   name: 'LikesSortedView',
   components: {
-    UserList,
-    InputText
+    UserList
   },
 
   data() {
@@ -33,7 +33,7 @@ export default {
       let list = [];
       let newObjects = {};
 
-      axios.get('http://localhost:8087/findAll')
+      axios.get('http://localhost:8087/getAllRss')
         .then(res => {
           list = res.data;
 

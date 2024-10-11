@@ -1,24 +1,20 @@
 package com.example.rss_spring.mapper;
 
+import com.example.rss_spring.model.Article;
 import com.example.rss_spring.model.RssFeed;
 
 import org.apache.ibatis.annotations.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mapper
 public interface DataMapper {
 
     // ！！！以下为rss源的数据库操作方法！！！
-    /**
-     *
-     * @param name       rss源名称
-     * @param url        rss源地址
-     */
-
     // 为什么这里是int
-    @Insert("INSERT INTO feed (id, name, url) VALUES (#(id), #{name}, #{url})")
-    int insertFeed(@Param("id") int id,
+    @Insert("INSERT INTO feed (name, url) VALUES (#{name}, #{url})")
+    void insertFeed(
                 @Param("name") String name,
                @Param("url") String url);
 
@@ -28,7 +24,15 @@ public interface DataMapper {
             @Result(property = "url", column = "url"),
     })
     @Select("SELECT * FROM feed")
-    List<RssFeed> getAllFeeds();
+    ArrayList<RssFeed> getAllFeeds();
+
+    @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "name", column = "name"),
+            @Result(property = "url", column = "url"),
+    })
+    @Select("SELECT * FROM feed WHERE id = #{id}")
+    RssFeed findFeedById(@Param("id") int id);
 
     @Update("UPDATE feed SET name = #{name}, url = #{url} WHERE id= #{id}")
     void updateFeed(RssFeed rssfeed);
@@ -37,6 +41,40 @@ public interface DataMapper {
     void deleteFeedById(int id);
 
 
+    // ！！！以下为文章的数据库操作方法！！！
+
+    // 插入文章
+    @Insert("INSERT INTO article (title, description, url, author, time) VALUES (#{title}, #{description}, #{url}, #{author}, #{time})")
+    void insertArticle(
+                   @Param("title") String title,
+                   @Param("description") String description,
+                   @Param("url") String url,
+                      @Param("author") String author,
+                      @Param("time") String time);
+
+//    // 此篇文章是否存在
+//    @Results({
+//            @Result(property = "id", column = "id"),
+//            @Result(property = "title", column = "title"),
+//            @Result(property = "description", column = "description"),
+//            @Result(property = "url", column = "url"),
+//            @Result(property = "author", column = "author"),
+//            @Result(property = "time", column = "time"),
+//    })
+//    @Select("SELECT * FROM article ORDER BY time")
+//    ArrayList<Article> isArticleHere();
+
+    // 返回按时间排序的文章
+    @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "title", column = "title"),
+            @Result(property = "description", column = "description"),
+            @Result(property = "url", column = "url"),
+            @Result(property = "author", column = "author"),
+            @Result(property = "time", column = "time"),
+    })
+    @Select("SELECT * FROM article ORDER BY time")
+    ArrayList<Article> getAllArticlesByTime();
 //    /**
 //     * 查询点赞数前50名的信息
 //     */

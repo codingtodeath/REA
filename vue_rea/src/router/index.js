@@ -15,7 +15,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (Newest.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/NewestView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/ArticleView.vue')
   },
   {
     path: '/Random',

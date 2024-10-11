@@ -7,14 +7,19 @@
       <router-link to="/Random">基本设置</router-link>
     </nav>
     <router-view />
-    <InputText />
-    <div class="newText">该列表最多显示50条内容！</div>
+    <!-- <InputText /> -->
+    <!-- <div class="newText">该列表最多显示50条内容！</div> -->
   </div>
 </template>
 
 <script>
+//import InputText from '@/components/InputText.vue'
+
 export default {
   name: 'App',
+  // components: {
+  //   InputText
+  // }
 }
 </script>
 
