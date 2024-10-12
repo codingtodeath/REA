@@ -6,7 +6,7 @@
       </div>
       <div class="box2">
         <div class="url">{{url}}</div>
-        <div class="id">{{id}}</div>
+        <!-- <div class="id">{{id}}</div> -->
         <!-- <img
           :src="imagePath"
           @click="toggleImage"
@@ -48,7 +48,7 @@
   margin: 5px;
 }
 
-.str {
+.name {
   flex: 1;
   text-align: center;
   font-size: 20px;
@@ -66,7 +66,7 @@
   display: flex;
 }
 
-.province {
+.url {
   text-align: center;
   font-size: 14px;
   width: 120px;
