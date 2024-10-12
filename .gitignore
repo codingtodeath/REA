@@ -1,2 +1,3 @@
 /.idea/
 /rss_spring/.mvn/
+/rss_spring/src/main/resources/application.properties
