@@ -27,6 +27,10 @@ public class DataService {
     @Autowired(required = false)
     private DataMapper dataMapper;
 
+<<<<<<< HEAD
+=======
+    private ChatLLm chatLLm;
+>>>>>>> ad173e3271400d027f7cf61f4bbe12d1b6b23a53
 
 //    @Data
     private ArrayList<RssFeed> feedArray;
@@ -41,6 +45,7 @@ public class DataService {
     // 使用 @PostConstruct 注解的方法来初始化 feedArray
     @PostConstruct
     public void init() {
+        chatLLm = new ChatLLm();
         feedArray = getAllFeeds();
         for(RssFeed element:feedArray) {
             parseFeed(element.getUrl());
@@ -60,7 +65,6 @@ public class DataService {
         //遍历这个rss源的所有文章
         for (SyndEntry element : list) {
             String time = simpleDateFormat.format(element.getPublishedDate());
-            System.out.println(element.getAuthor());
             if (!dataMapper.isArticleHere(element.getAuthor(),time)) {
                 String descript = element.getDescription().getValue();
                 String answer = descript;
