@@ -10,12 +10,15 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags = "API接口")
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin
 public class DataController {
 //    @Autowired
 //    private rssParser rssparser;
@@ -34,6 +37,14 @@ public class DataController {
     @GetMapping("/getAllRss")
     public ArrayList<RssFeed> getAllRss() {
         return dataService.getAllFeeds();
+    }
+
+
+    @ApiOperation("上传信息接口")
+    @PutMapping("/Add/{name}/{url}")
+    public void addRss(@PathVariable String name, @PathVariable String url) {
+        String decodedUrl = URLDecoder.decode(url, StandardCharsets.UTF_8);
+        dataService.insertFeed(name,decodedUrl);
     }
 
 //    @ApiOperation("解析点中的rss源")
@@ -60,5 +71,7 @@ public class DataController {
     public ArrayList<Article> getAllArticlesByTime() {
         return dataService.getAllArticlesByTime();
     }
+
+
 }
 

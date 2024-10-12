@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-  </template>
+</template>
   
   <!-- 添加“scoped作用域”属性以将 CSS 限制为此组件 -->
   <style scoped lang="scss">
@@ -115,6 +115,10 @@
       // }
     },
     methods: {
+        // emitClickItem() {
+        //     console.log("Article clicked");
+        //     this.$emit('clickItem');
+        // }
     //   toggleImage() {
     //     // 判断是否点赞过
     //     if (this.imagePath === require("@/assets/点赞-no.png")) {
