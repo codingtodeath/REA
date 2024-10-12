@@ -41,16 +41,25 @@ public class DataController {
 //        System.out.println(url);
 //        dataService.insertFeed(name, url);
 //    }
-@CrossOrigin(origins = "http://localhost:8086")
-@ApiOperation("添加新的Rss源")
-@PostMapping("/insertFeed")
-public void insert(@RequestParam String name,
-                   @RequestParam String url){
-    // @RequestBody注解用来绑定通过http请求中application/json类型上传的数据
-    System.out.println(name);
-    System.out.println(url);
-    dataService.insertFeed(name, url);
-}
+    @CrossOrigin(origins = "http://localhost:8086")
+    @ApiOperation("添加新的Rss源")
+    @PostMapping("/insertFeed")
+    public void insert(@RequestParam String name,
+                       @RequestParam String url){
+        // @RequestBody注解用来绑定通过http请求中application/json类型上传的数据
+        System.out.println(name);
+        System.out.println(url);
+        dataService.insertFeed(name, url);
+    }
+
+    @CrossOrigin(origins = "http://localhost:8086")
+    @ApiOperation("添加新的Rss源")
+    @PostMapping("/deleteFeed")
+    public void deletefeed(@RequestParam int id){
+        // @RequestBody注解用来绑定通过http请求中application/json类型上传的数据
+        System.out.println(id);
+        dataService.deleteFeedById(id);
+    }
 
     @ApiOperation("得到所有的Rss源")
     @GetMapping("/getAllRss")
