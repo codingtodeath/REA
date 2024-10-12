@@ -7,7 +7,7 @@ const routes = [
   {
     path: '/',
     name: '排行',
-    component: () => import('../views/LikesSortedView.vue')
+    component: () => import('../views/RssFeeds.vue')
   },
   {
     path: '/Newest',
@@ -20,7 +20,7 @@ const routes = [
   {
     path: '/Random',
     name: '随机',
-    component: () => import('../views/RandomView.vue')
+    component: () => import('../views/SaveDirection.vue')
   }
 ]
 
