@@ -27,10 +27,8 @@ public class DataService {
     @Autowired(required = false)
     private DataMapper dataMapper;
 
-<<<<<<< HEAD
-=======
     private ChatLLm chatLLm;
->>>>>>> ad173e3271400d027f7cf61f4bbe12d1b6b23a53
+
 
 //    @Data
     private ArrayList<RssFeed> feedArray;
