@@ -52,17 +52,10 @@ public interface DataMapper {
                       @Param("author") String author,
                       @Param("time") String time);
 
-//    // 此篇文章是否存在
-//    @Results({
-//            @Result(property = "id", column = "id"),
-//            @Result(property = "title", column = "title"),
-//            @Result(property = "description", column = "description"),
-//            @Result(property = "url", column = "url"),
-//            @Result(property = "author", column = "author"),
-//            @Result(property = "time", column = "time"),
-//    })
-//    @Select("SELECT * FROM article ORDER BY time")
-//    ArrayList<Article> isArticleHere();
+    // 此篇文章是否存在
+    @Select("SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM article WHERE author = #{author} and time = #{time}")
+    boolean isArticleHere(@Param("author") String author,
+                          @Param("time") String time);
 
     // 返回按时间排序的文章
     @Results({

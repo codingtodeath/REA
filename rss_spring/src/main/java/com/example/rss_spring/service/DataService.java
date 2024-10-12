@@ -27,6 +27,7 @@ public class DataService {
     @Autowired(required = false)
     private DataMapper dataMapper;
 
+
 //    @Data
     private ArrayList<RssFeed> feedArray;
 //
@@ -46,25 +47,59 @@ public class DataService {
         }
     }
 
-    public void parseFeed(String url){
+    public void parseFeed(String url) {
         SyndFeed parseFeed;
         System.out.println("parsing......   ");
-        try{
+        try {
             parseFeed = new SyndFeedInput().build(new XmlReader(new URL(url)));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return;
         }
         List<SyndEntry> list = parseFeed.getEntries();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //遍历这个rss源的所有文章
-        for (SyndEntry element: list){
-            // 设置日期格式
-            // SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            // 转换时间
-            dataMapper.insertArticle(element.getTitle(), element.getDescription().getValue(), element.getLink(),element.getAuthor(), simpleDateFormat.format(element.getPublishedDate()));
+        for (SyndEntry element : list) {
+            String time = simpleDateFormat.format(element.getPublishedDate());
+            System.out.println(element.getAuthor());
+            if (!dataMapper.isArticleHere(element.getAuthor(),time)) {
+                String descript = element.getDescription().getValue();
+                String answer = descript;
+                if (descript.length() > 20) {
+                    if(descript.startsWith("<")){
+                        answer = descript.split(">")[1];
+                    }
+                }
+                if(answer.length() > 20){
+                    answer = answer.substring(0,20);
+                }
+//            try {
+//                if (!dataMapper.isArticleHere(element.getTitle())) {
+//                    if (descript.length() > 20) {
+//                        try {
+//                            answer = chatLLm.chat("请为我概括以下内容（可能为html文件），不超过20字：" + descript.substring(0, 100));
+//                        } catch (Exception e) {
+//                            answer = descript.split(">")[0].substring(0, 20);
+//                        }
+//                    }
+//                    // 转换时间
+//                    dataMapper.insertArticle(element.getTitle(), answer, element.getLink(), element.getAuthor(), simpleDateFormat.format(element.getPublishedDate()));
+//                }
+//            } catch (Exception e) {
+//                if (descript.length() > 20) {
+//                    try {
+//                        answer = chatLLm.chat("请为我概括以下内容（可能为html文件），不超过20字：" + descript.substring(0, 100));
+//                    } catch (Exception ex) {
+//                        System.out.println(ex);
+//                        answer = descript.split(">")[0].substring(0, 20);
+//                    }
+//                }
+                // 转换时间
+                dataMapper.insertArticle(element.getTitle(), answer, element.getLink(), element.getAuthor(), time);
+            }
         }
     }
+
+
 
     //  ！！！以下是Rss源的相关操作！！！
     public void insertFeed(String name, String url) {
