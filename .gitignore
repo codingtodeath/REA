@@ -1,3 +1,7 @@
 /.idea/
 /rss_spring/.mvn/
+<<<<<<< HEAD
 /rss_spring/src/main/resources/application.properties
+=======
+/rss_spring/src/main/resources/application.properties
+>>>>>>> f37425e6955872806a11b228352019376888f000

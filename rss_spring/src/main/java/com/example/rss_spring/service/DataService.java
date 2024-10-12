@@ -41,7 +41,6 @@ public class DataService {
     // 使用 @PostConstruct 注解的方法来初始化 feedArray
     @PostConstruct
     public void init() {
-//        chatLLm = new ChatLLm();
         feedArray = getAllFeeds();
         for(RssFeed element:feedArray) {
             parseFeed(element.getUrl());
