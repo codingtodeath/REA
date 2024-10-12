@@ -113,12 +113,12 @@ export default {
 
           const encodedName = encodeURIComponent(name);
           const encodedUrl = encodeURIComponent(url);
-          axios.post(`http://localhost:8087/insertFeed?name=${encodedName}&url=${encodedUrl}`);
-              // 关闭对话框并清空表单
-              this.dialogVisible = false;
-              this.myform.myvalue1 = '';
-              this.myform.value2 = '';
-              this.getList();
+          await axios.post(`http://localhost:8087/insertFeed?name=${encodedName}&url=${encodedUrl}`);
+          // 关闭对话框并清空表单
+          this.dialogVisible = false;
+          this.myform.myvalue1 = '';
+          this.myform.value2 = '';
+          this.getList();
           } 
       catch (error) {
             console.error('提交失败', error);
@@ -134,10 +134,10 @@ export default {
     },
     async handleDelete() {
       try {
-        axios.post(`http://localhost:8087/deleteFeed?id=${this.selectedItem.id}`);
+        await axios.post(`http://localhost:8087/deleteFeed?id=${this.selectedItem.id}`);
+        this.getList(); // 删除成功后重新加载列表
         this.deleteDialogVisible = false;
         this.isDeleteMode = false;
-        this.getList(); // 删除成功后重新加载列表
       } catch (error) {
         console.error('删除失败', error);
       }
