@@ -1,12 +1,12 @@
 <template>
-  <div class="UserList">
-    <div class="box">
+  <div class="UserList" @click="handleClick">
+    <div class="box" :class="{ 'delete-mode': isDeleteMode }">
       <div class="box1">
-        <div class="str">{{name}}</div>
+        <div class="name">{{name}}</div>
       </div>
       <div class="box2">
-        <div class="province">{{url}}</div>
-        <div class="likes">{{id}}</div>
+        <div class="url">{{url}}</div>
+        <div class="id">{{id}}</div>
         <!-- <img
           :src="imagePath"
           @click="toggleImage"
@@ -90,6 +90,11 @@
   height: 16px;
   transition: all 0.3s ease; // 设置按钮元素的过渡效果
 }
+
+.box.delete-mode {
+  border-color: red;
+  background-color: #ffe6e6;
+}
 </style>
 
 
@@ -99,7 +104,8 @@
 export default {
   name: 'UserList',
   props: {
-    Obj: Object
+    Obj: Object,
+    isDeleteMode: Boolean
   },
   data() {
     return {
@@ -115,6 +121,11 @@ export default {
     // }
   },
   methods: {
+    handleClick() {
+      if (this.isDeleteMode) {
+        this.$emit('deleteFeed', this.Obj);
+      }
+    }
   //   toggleImage() {
   //     // 判断是否点赞过
   //     if (this.imagePath === require("@/assets/点赞-no.png")) {
