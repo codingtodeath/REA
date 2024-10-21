@@ -21,7 +21,7 @@
   import axios from 'axios'
   
   export default {
-    name: 'NewestView',
+    name: 'ArticleView',
     components: {
       ArticleList,
       UserList

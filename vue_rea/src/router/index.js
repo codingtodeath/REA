@@ -10,7 +10,7 @@ const routes = [
     component: () => import('../views/RssFeeds.vue')
   },
   {
-    path: '/Newest',
+    path: '/ArticleView',
     name: '最新',
     // route level code-splitting
     // this generates a separate chunk (Newest.[hash].js) for this route
@@ -18,7 +18,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/ArticleView.vue')
   },
   {
-    path: '/Random',
+    path: '/SaveDirection',
     name: '随机',
     component: () => import('../views/SaveDirection.vue')
   }

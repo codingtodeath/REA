@@ -3,8 +3,8 @@
     <h1 class="MyName">REA信息聚合系统</h1>
     <nav>
       <router-link to="/">Rss源管理</router-link> |
-      <router-link to="/Newest">文章阅读</router-link> |
-      <router-link to="/Random">基本设置</router-link>
+      <router-link to="/ArticleView">文章阅读</router-link> |
+      <router-link to="/SaveDirection">文章收藏</router-link>
     </nav>
     <router-view />
     <!-- <InputText /> -->
