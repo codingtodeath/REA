@@ -1,8 +1,8 @@
 ### 运行步骤
 
 1. 数据库建表，如下所示
-   ![image-20241012150413853](C:\Users\86173\AppData\Roaming\Typora\typora-user-images\image-20241012150413853.png)
-   ![image-20241012153721494](C:\Users\86173\AppData\Roaming\Typora\typora-user-images\image-20241012153721494.png)
+   ![image-article](.\assets\article.png)
+   ![image-feed](.\assets\feeds.png)
    
 2. 数据库修改编码(为了处理emoji存储)
    ```sql
