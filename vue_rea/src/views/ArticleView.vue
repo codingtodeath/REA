@@ -14,6 +14,7 @@
         <transition name="slide" mode="out-in"> <!-- 添加 transition 组件 -->
           <div class="button-container" v-if="!itemVisibility[index]">
               <button class="styled-button" @click="openOriginal(item)" >跳转原文</button>
+              <button :class="itemCollect[index]==1 ? 'styled-button-another':'styled-button'"  @click="collectItem(item,index)" >收藏</button>
               <button class="styled-button" @click="collapseContent(index)">收起</button>
           </div>
         </transition>
@@ -80,6 +81,18 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 阴影效果 */
 }
 
+  .styled-button-another {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px; /* 圆角 */
+  background: linear-gradient(135deg, #ee4c62, #f01154); /* 渐变背景 */
+  color: rgb(255, 255, 255); /* 文字颜色 */
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease; /* 过渡效果 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 阴影效果 */
+}
+
 .styled-button:hover {
   background: linear-gradient(135deg, #4a90e2, #6e7efc); /* 悬停时的渐变背景 */
   transform: translateY(-2px); /* 悬停时微微上升 */
@@ -107,7 +120,8 @@
     data() {
       return {
         Obj: [],
-        itemVisibility: []
+        itemVisibility: [],
+        itemCollect: []
       }
     },
   
@@ -124,6 +138,7 @@
             for (let i = 0; i < list.length; i++) {
               newObjects[i] = list[i];
               this.itemVisibility[i] = true;
+              this.itemCollect[i]=list[i].collect;
             }
             console.log(newObjects);
             this.Obj = newObjects;
@@ -137,7 +152,6 @@
             console.log("获取排行出错！")
             console.error(error);
           });
-  
       },
       trans(index) {
         this.$set(this.itemVisibility, index, !this.itemVisibility[index]);
@@ -155,10 +169,6 @@
         if(this.itemVisibility[index]){
           this.$set(this.itemVisibility, index, !this.itemVisibility[index]);
         }
-        console.log(this.itemVisibility[index]);
-        
-        // 可能还需要传递一些数据给 UserListView
-        // this.currentItem = item;
       },
       handleCollapse(index) {
       // 收起 ContentList，切换回 ArticleList
@@ -171,6 +181,34 @@
     },
     collapseContent(index) {
       this.$set(this.itemVisibility, index, true);
+    },
+
+    collectItem(item, index){
+      if(this.itemCollect[index]==1){
+        console.log("取消收藏");
+        this.$set(this.itemCollect,index , 0);
+        console.log("取消收藏成功");
+      }
+      else{
+        console.log("收藏");
+        this.$set(this.itemCollect,index, 1);
+      }
+      axios
+        .get(`http://localhost:8087/updateArticleCollect`,{
+          params: {
+            id: item.id,
+            collect: this.itemCollect[index] // 假设你有一个collect属性
+          }
+        })
+        .then()
+        .catch(error => {
+          this.$message({
+            message: '收藏设置失败！',
+            type: 'error',
+            duration: 2000
+          });
+          console.error("收藏设置出错！", error);
+        });
     }
     },
     created() {

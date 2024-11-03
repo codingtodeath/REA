@@ -1,17 +1,16 @@
 package com.example.rss_spring.rssHandler;
 
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 
+
+import com.example.rss_spring.service.HtmlToPdfUtils;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import com.zhipu.oapi.ClientV4;
 
 import java.text.SimpleDateFormat;
-import java.util.concurrent.TimeUnit;
 
 public class testRss {
 
@@ -23,7 +22,7 @@ public class testRss {
         SyndFeed parseFeed = new SyndFeedInput().build(new XmlReader(new URL(url)));
         //System.out.println(parseFeed);
         List list = parseFeed.getEntries();
-        SyndEntry feedEntry = (SyndEntry)list.get(0);
+        SyndEntry feedEntry = (SyndEntry)list.get(6);
         System.out.println(feedEntry.getPublishedDate());
 
         // 设置日期格式
@@ -35,7 +34,15 @@ public class testRss {
         //System.out.println(feedEntry.getLink());
         //System.out.println(feedEntry);
         System.out.println("------------------------------------------------------------------------");
-        System.out.println(feedEntry.getDescription().getValue());  // 阮一峰的引言
+        //System.out.println(feedEntry.getDescription().getValue());  // 阮一峰的引言
+        String html = feedEntry.getDescription().getValue();
+        // html转换为pdf
+        String pdfFile = "saveDocs/test.pdf";
+        HtmlToPdfUtils.convertToPdf(html, pdfFile);
+        System.out.println("转换结束");
+
+
+
         //System.out.println(feedEntry.getTitle());
         //String s = feedEntry.getContents().get(0).getValue();
         //System.out.println(feedEntry.getContents());

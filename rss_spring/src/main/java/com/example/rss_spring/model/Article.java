@@ -28,4 +28,10 @@ public class Article {
 
     @ApiModelProperty(value = "文章发布时间", required = true, example = "2024-10-11 08:11:11")
     private String time;
+
+    @ApiModelProperty(value = "文章内容", required = true, example = "。。。。。。")
+    private String content;
+
+    @ApiModelProperty(value = "是否收藏", required = true, example = "1")
+    private String collect;
 }

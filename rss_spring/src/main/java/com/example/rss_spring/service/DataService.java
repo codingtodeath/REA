@@ -8,6 +8,8 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
+
+import java.io.File;
 import java.net.URL;
 
 import jakarta.annotation.PostConstruct;
@@ -33,6 +35,9 @@ public class DataService {
 //
 //    @Data
     private ArrayList<Article> articleArray;
+
+
+    private String pdfPath = "saveDocs/Articles/";
 
     public DataService(){
 
@@ -100,7 +105,7 @@ public class DataService {
                 }
 
                 // 转换时间
-                dataMapper.insertArticle(element.getTitle(), answer, element.getLink(), element.getAuthor(), time, s);
+                dataMapper.insertArticle(element.getTitle(), answer, element.getLink(), element.getAuthor(), time, s, 0);
             }
         }
     }
@@ -128,12 +133,34 @@ public class DataService {
 
     //  ！！！以下是文章的相关操作！！！
     public void insertArticle(String title, String description, String url, String author, String time, String content){
-        dataMapper.insertArticle(title, description, url, author, time, content);
+        dataMapper.insertArticle(title, description, url, author, time, content, 0);
     }
 
     public ArrayList<Article> getAllArticlesByTime(){ return dataMapper.getAllArticlesByTime();}
 
     public String getContentById(int id){ return dataMapper.getContentById(id);}
+
+    public void updateArticleCollect(int id, int collect){
+        File dir = new File(pdfPath);
+        if (!dir.exists()) dir.mkdirs();
+        String filePath = pdfPath + id + ".pdf";
+        if(collect==1){  // 下载保存为pdf
+            try{
+                HtmlToPdfUtils.convertToPdf(getContentById(id), filePath);
+            }catch (Exception e){
+                return;
+            }
+        }
+        else{
+            File file = new File(filePath);
+            if(file.delete()){
+                System.out.println("文件删除成功！");
+            }
+        }
+        dataMapper.updateArticleCollect(id,collect);
+    }
+
+    public int getArticleCollectById(int id){ return dataMapper.getArticleCollectById(id);}
 
 //
 //    /**

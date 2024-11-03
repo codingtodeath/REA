@@ -106,5 +106,17 @@ public class DataController {
         return dataService.getContentById(id);
     }
 
+    @ApiOperation("收藏或取消收藏某一篇文章")
+    @GetMapping("/updateArticleCollect")
+    public void updateArticleCollect(@RequestParam int id, @RequestParam int collect) {
+        dataService.updateArticleCollect(id, collect);
+    }
+
+    @ApiOperation("查看某一篇文章的收藏状态")
+    @GetMapping("/getArticleCollectById")
+    public int getArticleCollectById(@RequestParam int id) {
+        return dataService.getArticleCollectById(id);
+    }
+
 }
 

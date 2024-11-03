@@ -44,14 +44,15 @@ public interface DataMapper {
     // ！！！以下为文章的数据库操作方法！！！
 
     // 插入文章
-    @Insert("INSERT INTO article (title, description, url, author, time, content) VALUES (#{title}, #{description}, #{url}, #{author}, #{time}, #{content})")
+    @Insert("INSERT INTO article (title, description, url, author, time, content, collect) VALUES (#{title}, #{description}, #{url}, #{author}, #{time}, #{content}, #{collect})")
     void insertArticle(
                    @Param("title") String title,
                    @Param("description") String description,
                    @Param("url") String url,
                       @Param("author") String author,
                       @Param("time") String time,
-                    @Param("content") String content);
+                    @Param("content") String content,
+                   @Param("collect") int collect);
 
     // 此篇文章是否存在
     @Select("SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM article WHERE author = #{author} and time = #{time}")
@@ -66,6 +67,7 @@ public interface DataMapper {
             @Result(property = "url", column = "url"),
             @Result(property = "author", column = "author"),
             @Result(property = "time", column = "time"),
+            @Result(property = "collect", column = "collect"),
     })
     @Select("SELECT * FROM article ORDER BY time DESC")
     ArrayList<Article> getAllArticlesByTime();
@@ -73,6 +75,14 @@ public interface DataMapper {
     // 得到文章内容
     @Select("SELECT content FROM article WHERE id = #{id}")
     String getContentById(int id);
+
+    // 更新文章收藏状态
+    @Update("UPDATE article SET collect = #{collect} WHERE id= #{id}")
+    void updateArticleCollect(int id, int collect);
+
+    // 查询文章收藏状态
+    @Select("SELECT collect FROM article WHERE id = #{id}")
+    int getArticleCollectById(int id);
 //    /**
 //     * 查询点赞数前50名的信息
 //     */
