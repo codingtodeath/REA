@@ -100,6 +100,11 @@ public class DataController {
         return dataService.getAllArticlesByTime();
     }
 
+    @ApiOperation("查看某一篇文章")
+    @GetMapping("/getContentById")
+    public String getContentById(@RequestParam int id) {
+        return dataService.getContentById(id);
+    }
 
 }
 

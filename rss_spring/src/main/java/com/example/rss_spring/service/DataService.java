@@ -92,8 +92,15 @@ public class DataService {
 //                        answer = descript.split(">")[0].substring(0, 20);
 //                    }
 //                }
+                String s = "null";
+                try{
+                    s = element.getContents().get(0).getValue();
+                } catch (Exception e) {
+                    s = element.getDescription().getValue();
+                }
+
                 // 转换时间
-                dataMapper.insertArticle(element.getTitle(), answer, element.getLink(), element.getAuthor(), time);
+                dataMapper.insertArticle(element.getTitle(), answer, element.getLink(), element.getAuthor(), time, s);
             }
         }
     }
@@ -120,11 +127,13 @@ public class DataService {
 
 
     //  ！！！以下是文章的相关操作！！！
-    public void insertArticle(String title, String description, String url, String author, String time){
-        dataMapper.insertArticle(title, description, url, author, time);
+    public void insertArticle(String title, String description, String url, String author, String time, String content){
+        dataMapper.insertArticle(title, description, url, author, time, content);
     }
 
     public ArrayList<Article> getAllArticlesByTime(){ return dataMapper.getAllArticlesByTime();}
+
+    public String getContentById(int id){ return dataMapper.getContentById(id);}
 
 //
 //    /**

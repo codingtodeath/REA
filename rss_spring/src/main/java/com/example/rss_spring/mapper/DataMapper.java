@@ -44,13 +44,14 @@ public interface DataMapper {
     // ！！！以下为文章的数据库操作方法！！！
 
     // 插入文章
-    @Insert("INSERT INTO article (title, description, url, author, time) VALUES (#{title}, #{description}, #{url}, #{author}, #{time})")
+    @Insert("INSERT INTO article (title, description, url, author, time, content) VALUES (#{title}, #{description}, #{url}, #{author}, #{time}, #{content})")
     void insertArticle(
                    @Param("title") String title,
                    @Param("description") String description,
                    @Param("url") String url,
                       @Param("author") String author,
-                      @Param("time") String time);
+                      @Param("time") String time,
+                    @Param("content") String content);
 
     // 此篇文章是否存在
     @Select("SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM article WHERE author = #{author} and time = #{time}")
@@ -66,8 +67,12 @@ public interface DataMapper {
             @Result(property = "author", column = "author"),
             @Result(property = "time", column = "time"),
     })
-    @Select("SELECT * FROM article ORDER BY time")
+    @Select("SELECT * FROM article ORDER BY time DESC")
     ArrayList<Article> getAllArticlesByTime();
+
+    // 得到文章内容
+    @Select("SELECT content FROM article WHERE id = #{id}")
+    String getContentById(int id);
 //    /**
 //     * 查询点赞数前50名的信息
 //     */

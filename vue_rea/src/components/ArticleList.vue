@@ -23,6 +23,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 1500px;
   }
   
   .box {
