@@ -1,5 +1,7 @@
 ### 运行步骤
 
+数据库在变，之后完成再写README
+
 1. 数据库建表，如下所示
    ![image-article](.\assets\article.png)
    ![image-feed](.\assets\feeds.png)
