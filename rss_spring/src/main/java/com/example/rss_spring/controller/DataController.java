@@ -4,6 +4,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import com.example.rss_spring.model.Article;
 import com.example.rss_spring.model.RssFeed;
+import com.example.rss_spring.service.RAG;
 //import com.example.rss_spring.rssHandler.rssParser;
 import com.example.rss_spring.service.DataService;
 import io.swagger.annotations.Api;
@@ -155,6 +156,15 @@ public class DataController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+
+    @CrossOrigin(origins = "http://localhost:8086")
+    @ApiOperation("向RAG提出问题")
+    @PostMapping("/RAGquery")
+    public String RAGquery(@RequestParam String query) throws Exception {
+        // @RequestBody注解用来绑定通过http请求中application/json类型上传的数据
+        return RAG.queryHaystack(query);
     }
 }
 

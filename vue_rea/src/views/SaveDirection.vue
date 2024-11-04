@@ -36,10 +36,10 @@
         <input
           type="text"
           maxlength="500"
-          v-model="inputValue"
-          placeholder="请问..."
+          v-model="newQuestion"
+          placeholder="What sports does Liao Yefei like?"
         />
-        <img src="../assets/send.png" class="submit-btn"/>
+        <img src="../assets/send.png" class="submit-btn" @click="askQuestion"/>
       </div>
     </div>
 
@@ -70,7 +70,9 @@
       dialogList: [], // 存储问答信息
       Obj: [],
       diaplayId: 0,
-      pages:[]
+      pages:[],
+      newQuestion: '',
+      placeholder: ''
       }
     },
   
@@ -102,10 +104,28 @@
       showPdf(url) {
         this.currentPdfUrl = url;
       },
-      askQuestion() {
-        // 模拟调用 RAG API 进行问答
-        // 你可以替换为实际的 API 请求
-      this.answer = `你问的问题是：${this.question}，回答是：...`;
+
+      async askQuestion() {
+        //if (!this.newQuestion) this.newQuestion=this.placeholder; // 确保输入不为空
+        const question = this.newQuestion;
+        // 将用户问题添加到对话列表
+        this.dialogList.push({ question, answer: '等待回答...' });
+        this.newQuestion = ''; // 清空输入框
+
+        try {
+          // 发送请求到后端
+          const response = await axios.post(`http://localhost:8087/RAGquery?query=${question}`);
+          console.log(response);
+          // 假设返回的数据结构是 { answer: '...' }
+          const answer = response.data;
+
+          // 更新对话列表
+          this.$set(this.dialogList, this.dialogList.length - 1, { question, answer });
+        } catch (error) {
+          console.error('发送请求时出错:', error);
+          // 处理错误
+          this.dialogList[this.dialogList.length - 1].answer = '出错了，请重试。';
+        }
       },
       async choosePdf(item){
         this.displayId=item.id;
