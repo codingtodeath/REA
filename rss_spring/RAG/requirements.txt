@@ -1,0 +1,6 @@
+django_haystack==3.3.0
+fastapi==0.115.4
+openai==1.53.0
+pydantic==1.10.18
+PyPDF2==3.0.1
+uvicorn==0.32.0
