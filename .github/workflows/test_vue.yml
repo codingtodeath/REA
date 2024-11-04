@@ -10,8 +10,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Switch to vue directory
-        run: cd vue_rea
+      # - name: Switch to vue directory
+      #   working-directory: ./REA/vue_rea  # 指定 Vue 项目所在的子文件夹
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,14 +23,14 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./frontend  # 指定 Vue 项目所在的子文件夹
+        working-directory: ./REA/vue_rea  # 指定 Vue 项目所在的子文件夹
 
       - name: Build project
         run: npm run build  # 生成 Vue 静态文件
-        working-directory: ./frontend  # 指定 Vue 项目所在的子文件夹
+        working-directory: ./REA/vue_rea  # 指定 Vue 项目所在的子文件夹
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend/dist  # Vue 项目的静态文件目录
+          publish_dir: ./REA/vue_rea/dist  # Vue 项目的静态文件目录
