@@ -5,4 +5,6 @@ module.exports = defineConfig({
   devServer: {
     port: 8086, // 此处修改你想要的端口号
   },
+  
+  publicPath: process.env.NODE_ENV === 'production' ? '/REA/' : '/'
 })
