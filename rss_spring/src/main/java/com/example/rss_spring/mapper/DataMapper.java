@@ -83,6 +83,10 @@ public interface DataMapper {
     // 查询文章收藏状态
     @Select("SELECT collect FROM article WHERE id = #{id}")
     int getArticleCollectById(int id);
+
+    // 查询全部收藏的文章
+    @Select("SELECT * FROM article WHERE collect = 1")
+    ArrayList<Article> getALLArticleByCollect();
 //    /**
 //     * 查询点赞数前50名的信息
 //     */

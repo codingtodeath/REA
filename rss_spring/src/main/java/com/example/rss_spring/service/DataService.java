@@ -144,7 +144,7 @@ public class DataService {
         File dir = new File(pdfPath);
         if (!dir.exists()) dir.mkdirs();
         String filePath = pdfPath + id + ".pdf";
-        if(collect==1){  // 下载保存为pdf
+        if(collect==1){  // 收藏 并下载保存为pdf
             try{
                 HtmlToPdfUtils.convertToPdf(getContentById(id), filePath);
             }catch (Exception e){
@@ -160,7 +160,13 @@ public class DataService {
         dataMapper.updateArticleCollect(id,collect);
     }
 
+    public String getPdfPath(){
+        return this.pdfPath;
+    }
+
     public int getArticleCollectById(int id){ return dataMapper.getArticleCollectById(id);}
+
+    public ArrayList<Article> getAllArticlesByCollect(){ return dataMapper.getALLArticleByCollect();}
 
 //
 //    /**

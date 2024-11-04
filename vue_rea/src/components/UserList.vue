@@ -6,12 +6,6 @@
       </div>
       <div class="box2">
         <div class="url">{{url}}</div>
-        <!-- <div class="id">{{id}}</div> -->
-        <!-- <img
-          :src="imagePath"
-          @click="toggleImage"
-          class="img-btn"
-        /> -->
       </div>
     </div>
   </div>

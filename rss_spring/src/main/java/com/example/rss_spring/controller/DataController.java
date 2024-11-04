@@ -1,5 +1,7 @@
 package com.example.rss_spring.controller;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import com.example.rss_spring.model.Article;
 import com.example.rss_spring.model.RssFeed;
 //import com.example.rss_spring.rssHandler.rssParser;
@@ -8,10 +10,18 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 @Api(tags = "API接口")
@@ -47,8 +57,6 @@ public class DataController {
     public void insert(@RequestParam String name,
                        @RequestParam String url){
         // @RequestBody注解用来绑定通过http请求中application/json类型上传的数据
-        System.out.println(name);
-        System.out.println(url);
         dataService.insertFeed(name, url);
     }
 
@@ -65,6 +73,13 @@ public class DataController {
     @GetMapping("/getAllRss")
     public ArrayList<RssFeed> getAllRss() {
         return dataService.getAllFeeds();
+    }
+
+
+    @ApiOperation("得到所有收藏的文章")
+    @GetMapping("/getCollectArticles")
+    public ArrayList<Article> getCollectArticles() {
+        return dataService.getAllArticlesByCollect();
     }
 
 
@@ -118,5 +133,28 @@ public class DataController {
         return dataService.getArticleCollectById(id);
     }
 
+
+    @ApiOperation("通过收藏的PDF ID索取pdf文件")
+    @GetMapping("/getPdfById")
+    public ResponseEntity<Resource> getPdfById(@RequestParam int id) throws MalformedURLException, FileNotFoundException {
+        try {
+            String pdfPath = dataService.getPdfPath();
+            String filePath = pdfPath + id + ".pdf";
+            System.out.println(filePath);
+            Path path = Paths.get(filePath);
+            Resource resource = new UrlResource(path.toUri());
+            if (!resource.exists()) {
+                throw new FileNotFoundException("File not found");
+            }
+            // 设置响应头
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + resource.getFilename());
+            headers.setContentType(MediaType.APPLICATION_PDF);
+
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
 
