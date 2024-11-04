@@ -3,7 +3,7 @@ name: Deploy Vue to GitHub Pages
 on:
   push:
     branches:
-      - main  # 在推送到 main 分支时触发
+      - master  # 在推送到 master 分支时触发
 
 jobs:
   build-and-deploy:
