@@ -23,14 +23,14 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./REA/vue_rea  # 指定 Vue 项目所在的子文件夹
+        working-directory: vue_rea\  # 指定 Vue 项目所在的子文件夹
 
       - name: Build project
         run: npm run build  # 生成 Vue 静态文件
-        working-directory: ./REA/vue_rea  # 指定 Vue 项目所在的子文件夹
+        working-directory: vue_rea\  # 指定 Vue 项目所在的子文件夹
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./REA/vue_rea/dist  # Vue 项目的静态文件目录
+          publish_dir: vue_rea\dist\  # Vue 项目的静态文件目录
