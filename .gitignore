@@ -1,0 +1,5 @@
+.idea/
+rss_spring/.mvn/
+rss_spring/src/main/resources/application.properties
+rss_spring/saveDocs/
+rss_spring/RAG/config.json
