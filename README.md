@@ -74,6 +74,13 @@ ALTER TABLE feed CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ai_ci;
 | name  | varchar(255)  | NO   |      | NULL    |                |
 | url   | varchar(2048) | NO   |      | NULL    |                |
 
+#### RAG运行（需要科学上网）
+
+1. 进入`rss_spring/RAG/`文件夹
+2. 打开`config.json.example`文件配置api key，配置完成后去掉后面的.example
+3. 创建python 3.10环境，`pip install -r ./requirements.txt`安装依赖库
+4. `python RAG.py`运行，出现 **[INFO]** 即成功启动
+
 
 
 #### Spring后端运行
