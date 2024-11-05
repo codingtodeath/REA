@@ -86,7 +86,8 @@ ALTER TABLE feed CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ai_ci;
 #### Spring后端运行
 
 1. 使用maven构建工程，下载相关依赖
-2. 运行RssSpringApplication
+2. 在`rss_spring\src\main\resources\application.properties`中配置数据库地址、用户名和密码信息 ~~（可以先使用idea工具测试能不能连接）~~
+3. 运行RssSpringApplication
 
 
 
