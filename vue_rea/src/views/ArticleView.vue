@@ -3,7 +3,12 @@
     <div class="wrapper" v-for="(item, index) in Obj" :key="index">
       <div class="container">
         <!-- 使用 transition 组件添加切换动画 -->
-        <div @click="handleClick(index)">
+        <div @click="handleClick(index)" class="horizontal-container">
+          <transition name="scale" mode="out-in">
+          <DescriptionList v-if="itemDescript[index] && !itemVisibility[index]"
+            :description="description[index]"
+          />
+        </transition>
         <transition name="scale" mode="out-in">
           <component
             :is="itemVisibility[index] ? 'ArticleList' : 'ContentList'"
@@ -16,6 +21,7 @@
               <button class="styled-button" @click="openOriginal(item)" >跳转原文</button>
               <button :class="itemCollect[index]==1 ? 'styled-button-another':'styled-button'"  @click="collectItem(item,index)" >收藏</button>
               <button class="styled-button" @click="collapseContent(index)">收起</button>
+              <button :class="itemDescript[index]==1 ? 'styled-button-another':'styled-button'" @click="llmDescription(index)">摘要</button>
           </div>
         </transition>
       </div>
@@ -24,6 +30,27 @@
 </template>
 
 <style>
+.horizontal-container {
+  display: flex;
+  align-items: center; /* 垂直方向居中对齐 */
+  justify-content: flex-start; /* 左对齐，可根据需求修改 */
+  align-items: flex-start;
+  gap: 16px; /* 元素之间的间距 */
+  flex-wrap: nowrap; /* 禁止子元素换行 */
+}
+
+.horizontal-container > * {
+  flex: 1; /* 每个子元素占据相等的空间 */
+}
+
+.description-list {
+  max-width: 40%; /* 可选：限制 DescriptionList 的宽度 */
+}
+
+.component-content {
+  max-width: 60%; /* 可选：限制 Component 的宽度 */
+}
+
 .slide-enter-active {
   transition: transform 1.5s ease, opacity 1.5s ease; /* 设置持续时间为 2s */
 }
@@ -55,7 +82,9 @@
   display: flex; /* 使用flex布局 */
   flex-direction: row; /* 子元素横向排列 */
   align-items: flex-start; /* 对齐方式，确保子元素从顶部开始 */
-  margin:auto;
+
+  margin-left: 180px;
+  margin-right: 200px;
 }
 
   .button-container {
@@ -66,7 +95,7 @@
   gap: 30px; /* 按钮间距 */
   width: 150px; /* 让按钮容器占满宽度 */
   top: 70px; /* 适当调整顶部位置 */
-  right: -70px; /* 适当调整右侧位置 */
+  right: -170px; /* 适当调整右侧位置 */
 }
   
   .styled-button {
@@ -108,20 +137,24 @@
   // @ 是 /src 的别名
   import ArticleList from '@/components/ArticleList.vue'
   import ContentList from '@/components/ContentList.vue'
+  import DescriptionList from '@/components/DescriptionList.vue';
   import axios from 'axios'
   
   export default {
     name: 'ArticleView',
     components: {
       ArticleList,
-      ContentList
+      ContentList,
+      DescriptionList
     },
   
     data() {
       return {
         Obj: [],
         itemVisibility: [],
-        itemCollect: []
+        itemCollect: [],
+        itemDescript: [],
+        description: []
       }
     },
   
@@ -139,6 +172,8 @@
               newObjects[i] = list[i];
               this.itemVisibility[i] = true;
               this.itemCollect[i]=list[i].collect;
+              this.itemDescript[i]=0;
+              this.description[i]="";
             }
             console.log(newObjects);
             this.Obj = newObjects;
@@ -182,7 +217,25 @@
     collapseContent(index) {
       this.$set(this.itemVisibility, index, true);
     },
-
+    llmDescription(index){
+      this.$set(this.itemDescript,index , !this.itemDescript[index]);
+      if(this.itemDescript[index]){
+        axios
+        .get(`http://localhost:8087/getArticleLLMById?id=${this.Obj[index].id}`)
+        .then(res => {
+          this.$set(this.description,index , res.data);
+          console.log("111",this.description);
+        })
+        .catch(error => {
+            this.$message({
+            message: '获取内容失败！',
+            type: 'error',
+            duration: 2000
+            });
+            console.error("获取内容出错！", error);
+        });
+      }
+    },
     collectItem(item, index){
       if(this.itemCollect[index]==1){
         console.log("取消收藏");

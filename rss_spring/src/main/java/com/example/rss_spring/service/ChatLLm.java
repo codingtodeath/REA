@@ -29,14 +29,13 @@ public class ChatLLm {
 
     private static final int MAX_CHUNK_SIZE = 2000;  // 最长分块
 
-    public static String chat(String txt) {
-        String Ask_txt = "请直接为以下内容生成简短摘要：\n\n"+txt;
+    public static String chat(String txt) {;
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("model", "gpt-3.5-turbo");
         List<Map<String, String>> dataList = new ArrayList<>();
         dataList.add(new HashMap<String, String>(){{
             put("role", "user");
-            put("content", Ask_txt);
+            put("content", txt);
         }});
         paramMap.put("messages", dataList);
         JSONObject message = null;
@@ -91,7 +90,7 @@ public class ChatLLm {
         for (String chunk : chunks) {
             futures.add(executor.submit(() -> {
                 try {
-                    return chat(chunk);
+                    return chat("请直接为以下内容生成简短摘要：\n\n"+chunk);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return ""; // 出现错误时返回空摘要
@@ -108,7 +107,7 @@ public class ChatLLm {
         executor.shutdown(); // 关闭线程池
 
         // 对合并后的摘要进行最终整合
-        return chat(combinedSummary.toString());
+        return chat("以下是文章的分段总结内容，请进行概括总结，如需分点说明请进行分点：\n\n"+combinedSummary.toString());
     }
 
     public static void main(String[] args) {

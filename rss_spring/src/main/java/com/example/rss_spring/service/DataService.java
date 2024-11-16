@@ -169,15 +169,21 @@ public class DataService {
     public ArrayList<Article> getAllArticlesByCollect(){ return dataMapper.getALLArticleByCollect();}
 
     // 生成文章的大模型摘要
-    public void updateArticleLLM(int id){
-        dataMapper.updateArticleLLM(id, ChatLLm.chat(getContentById(id)));
+    public void updateArticleLLM(int id) throws Exception {
+        dataMapper.updateArticleLLM(id, ChatLLm.summarizeHTML(getContentById(id)));
     }
 
     // 得到文章的大模型摘要
-    public String getArticleLLMById(int id){
+    public String getArticleLLMById(int id) {
         String llm = dataMapper.getArticleLLMById(id);
         if(llm==null){
-            updateArticleLLM(id);
+            try{
+                updateArticleLLM(id);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
             llm = dataMapper.getArticleLLMById(id);
         }
         return dataMapper.getArticleLLMById(id);

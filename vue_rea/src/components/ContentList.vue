@@ -49,7 +49,7 @@
     border-radius: 15px; /* 加大圆角，使容器更柔和 */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 更柔和的阴影 */
     padding: 20px 40px; /* 增加左右内边距 */
-    width: 80%; /* 使用百分比宽度使容器自适应屏幕 */
+    width: 60%; /* 使用百分比宽度使容器自适应屏幕 */
     max-width: 1500px;
     max-height: 800px; /* 设置最大高度 */
     overflow-y: auto; /* 启用垂直滚动条 */
