@@ -168,6 +168,21 @@ public class DataService {
 
     public ArrayList<Article> getAllArticlesByCollect(){ return dataMapper.getALLArticleByCollect();}
 
+    // 生成文章的大模型摘要
+    public void updateArticleLLM(int id){
+        dataMapper.updateArticleLLM(id, ChatLLm.chat(getContentById(id)));
+    }
+
+    // 得到文章的大模型摘要
+    public String getArticleLLMById(int id){
+        String llm = dataMapper.getArticleLLMById(id);
+        if(llm==null){
+            updateArticleLLM(id);
+            llm = dataMapper.getArticleLLMById(id);
+        }
+        return dataMapper.getArticleLLMById(id);
+    }
+
 //
 //    /**
 //     * 获取用户数据并调用mapper层上传数据库
@@ -248,5 +263,6 @@ public class DataService {
 //
 //        return "succeed";
 //    }
+
 }
 

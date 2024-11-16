@@ -34,4 +34,7 @@ public class Article {
 
     @ApiModelProperty(value = "是否收藏", required = true, example = "1")
     private String collect;
+
+    @ApiModelProperty(value = "大模型摘要", required = true, example = "每周值得分享的科技内容")
+    private String llm;
 }

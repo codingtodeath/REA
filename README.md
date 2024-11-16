@@ -34,7 +34,8 @@ CREATE TABLE article (
     author VARCHAR(255) COMMENT '文章作者',
     time DATETIME COMMENT '文章发布时间',
     content LONGTEXT COMMENT '文章内容',
-    collect TINYINT COMMENT '文章是否收藏'
+    collect TINYINT COMMENT '文章是否收藏',
+    llm LONGTEXT COMMENT '文章的大模型摘要'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE feed (
@@ -63,6 +64,7 @@ ALTER TABLE feed CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ai_ci;
 | time        | datetime      | YES  |      | NULL    |                |
 | content     | longtext      | YES  |      | NULL    |                |
 | collect     | tinyint       | YES  |      | NULL    |                |
+| llm         | longtext      | YES  |      | NULL    |                |
 
 <h3 style="text-align: center;">
   feed

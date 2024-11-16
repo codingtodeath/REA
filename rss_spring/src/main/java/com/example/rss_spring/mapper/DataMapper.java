@@ -87,6 +87,14 @@ public interface DataMapper {
     // 查询全部收藏的文章
     @Select("SELECT * FROM article WHERE collect = 1")
     ArrayList<Article> getALLArticleByCollect();
+
+    // 插入大模型摘要
+    @Update("UPDATE article SET llm = #{llm} WHERE id= #{id}")
+    void updateArticleLLM(int id, String llm);
+
+    // 查询大模型摘要
+    @Select("SELECT llm FROM article WHERE id = #{id}")
+    String getArticleLLMById(int id);
 //    /**
 //     * 查询点赞数前50名的信息
 //     */

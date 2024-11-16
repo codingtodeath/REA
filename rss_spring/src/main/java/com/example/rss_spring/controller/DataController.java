@@ -134,6 +134,11 @@ public class DataController {
         return dataService.getArticleCollectById(id);
     }
 
+    @ApiOperation("查看某一篇文章的LLM摘要")
+    @GetMapping("/getArticleLLMById")
+    public String getArticleLLMById(@RequestParam int id) {
+        return dataService.getArticleLLMById(id);
+    }
 
     @ApiOperation("通过收藏的PDF ID索取pdf文件")
     @GetMapping("/getPdfById")
