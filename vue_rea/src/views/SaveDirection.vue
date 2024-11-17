@@ -10,6 +10,14 @@
       :isChooseMode="isChooseMode"
       @displayit="choosePdf(item)"
     />
+        <!-- 导入文件按钮 -->
+    <button @click="triggerFileUpload" class="import-btn">导入文件</button>
+    <input 
+      type="file" 
+      ref="fileInput" 
+      @change="handleFileUpload" 
+      style="display: none;" 
+    />
     </div>
 
     <!-- 中间 PDF 展示区域 -->
@@ -81,7 +89,7 @@
       
       getList() {
         let list = [];
-        let newObjects = {};
+        let newObjects = [];
 
         axios.get('http://localhost:8087/getCollectArticles')
           .then(res => {
@@ -130,10 +138,9 @@
       async choosePdf(item){
         this.displayId=item.id;
         console.log(item.id);
-
+        console.log(item.name);
         try {
-            const response = await axios.get('http://localhost:8087/getPdfById', {
-                params: { id: item.id },
+            const response = await axios.get(`http://localhost:8087/getPdfById?id=${ item.id}&name=${item.name}`, {
                 responseType: 'blob'
             });
 
@@ -177,6 +184,40 @@
         } catch (error) {
             console.error('Error loading PDF:', error);
         }
+      },
+      // 触发文件选择器
+      triggerFileUpload() {
+        this.$refs.fileInput.click();
+      },
+        // 处理文件上传
+      async handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // 创建 FormData 对象
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          // 上传文件到后端
+          const response = await axios.post("http://localhost:8087/uploadFile", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            setTimeout:60000,
+          });
+
+          // 将返回的文件信息添加到 Obj 列表
+          const newFile = response.data; // 假设后端返回新文件信息
+          this.Obj.push(newFile);
+
+          // 清空文件输入
+          this.$refs.fileInput.value = null;
+          alert("文件上传成功！");
+        } catch (error) {
+          console.error("文件上传失败", error);
+          alert("文件上传失败！");
+        }
       }
     },
   
@@ -204,6 +245,21 @@
   border-right: 1px solid #ccc;
   overflow-y: auto;
   position: relative;
+}
+
+.import-btn {
+  display: block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.import-btn:hover {
+  background-color: #0056b3;
 }
 
 .pdf-viewer {

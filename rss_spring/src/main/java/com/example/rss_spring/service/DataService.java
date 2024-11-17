@@ -4,25 +4,48 @@ import com.example.rss_spring.mapper.DataMapper;
 import com.example.rss_spring.model.Article;
 import com.example.rss_spring.model.RssFeed;
 
+import com.example.rss_spring.model.collectArticle;
+import com.itextpdf.html2pdf.ConverterProperties;
+import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.font.FontProvider;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 
-import java.io.File;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
 
 @Service
 public class DataService {
@@ -38,6 +61,7 @@ public class DataService {
 
 
     private String pdfPath = "saveDocs/Articles/";
+    private static String upLoads = "saveDocs/upLoads/";
 
     public DataService(){
 
@@ -160,13 +184,64 @@ public class DataService {
         dataMapper.updateArticleCollect(id,collect);
     }
 
+    public static collectArticle upLoadPDF(MultipartFile file){
+        try {
+            // 设置保存文件的路径
+            File uploadDir = new File(upLoads);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs(); // 创建目录
+            }
+            // 保存文件到指定目录
+            String filePath = upLoads + file.getOriginalFilename();
+            System.out.println(filePath);
+            File dest = new File(filePath);
+            InputStream inputStream = file.getInputStream();
+            OutputStream outputStream = new FileOutputStream(dest);
+
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            // 循环读取和写入
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            String realname=file.getOriginalFilename();
+            assert realname != null;
+            return new collectArticle(-1, realname.replaceAll("\\.pdf$",""));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getPdfPath(){
         return this.pdfPath;
     }
 
+    public String getUpLoadsPath(){
+        return upLoads;
+    }
+
+
     public int getArticleCollectById(int id){ return dataMapper.getArticleCollectById(id);}
 
-    public ArrayList<Article> getAllArticlesByCollect(){ return dataMapper.getALLArticleByCollect();}
+    public ArrayList<collectArticle> getAllArticlesByCollect(){
+        ArrayList<collectArticle> result=new ArrayList<>();
+        File uploadDir = new File(upLoads);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs(); // 创建目录
+        }
+        File[] files = uploadDir.listFiles(); // 获取文件夹中的文件和子目录
+        if (files != null) {
+            for (File file : files) {
+                result.add(new collectArticle(-1, file.getName().replaceAll("\\.pdf$","")));
+                System.out.println(file.getName());
+            }
+        }
+        for(Article webarticle: dataMapper.getALLArticleByCollect()){
+            result.add(new collectArticle(webarticle.getId(), webarticle.getTitle()));
+        }
+        return result;
+    }
 
     // 生成文章的大模型摘要
     public void updateArticleLLM(int id) throws Exception {
@@ -189,86 +264,6 @@ public class DataService {
         return dataMapper.getArticleLLMById(id);
     }
 
-//
-//    /**
-//     * 获取用户数据并调用mapper层上传数据库
-//     *
-//     * @param request
-//     * @param response
-//     * @param str
-//     * @return
-//     */
-//    public String Add(HttpServletRequest request, HttpServletResponse response, String str) {
-//
-//        getIP getIP = new getIP();
-//        getProvince getProvince = new getProvince();
-//        getTime getTime = new getTime();
-//
-//        // 获取信息的IP地址
-//        String ip = getIP.get_IP(request, response);
-//        // 获取信息所属省份
-//        String province = getProvince.get_Province(ip);
-//        // 获取当前时间
-//        String time = getTime.get_Time();
-//        // 设置点赞数为0
-//        int likes = 0;
-//
-//        // 上传数据
-//        dataMapper.insert(ip, province, time, str, likes);
-//
-//        return "succeed";
-//    }
-//
-//    /**
-//     * 查询点赞数排名前50的信息
-//     *
-//     * @return
-//     */
-//    public List<getUser> findByLikes() {
-//        return dataMapper.findByLikes();
-//    }
-//
-//    /**
-//     * 查询最新的50条信息
-//     *
-//     * @return
-//     */
-//    public List<getUser> findByTime() {
-//        return dataMapper.findByTime();
-//    }
-//
-//    /**
-//     * 查询随机的50条信息
-//     *
-//     * @return
-//     */
-//    public List<getUser> findByRand() {
-//        return dataMapper.findByRand();
-//    }
-//
-//    /**
-//     * 更新指定id对应的点赞数+1
-//     *
-//     * @param id
-//     * @return
-//     */
-//    public String increaseLikesById(int id) {
-//        dataMapper.increaseLikesById(id);
-//
-//        return "succeed";
-//    }
-//
-//    /**
-//     * 更新指定id对应的点赞数-1
-//     *
-//     * @param id
-//     * @return
-//     */
-//    public String decreaseLikesById(int id) {
-//        dataMapper.decreaseLikesById(id);
-//
-//        return "succeed";
-//    }
 
 }
 

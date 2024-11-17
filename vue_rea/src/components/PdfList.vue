@@ -63,7 +63,7 @@
     data() {
       return {
         //imagePath: require("@/assets/点赞-no.png"),
-        name: this.Obj.title,
+        name: this.Obj.name,
         id: this.Obj.id
       };
     },

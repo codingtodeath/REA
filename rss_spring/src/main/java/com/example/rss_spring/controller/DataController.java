@@ -1,5 +1,6 @@
 package com.example.rss_spring.controller;
 
+import com.example.rss_spring.model.collectArticle;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import com.example.rss_spring.model.Article;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -24,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.io.File;
 
 @Api(tags = "API接口")
 @RestController
@@ -79,7 +82,7 @@ public class DataController {
 
     @ApiOperation("得到所有收藏的文章")
     @GetMapping("/getCollectArticles")
-    public ArrayList<Article> getCollectArticles() {
+    public ArrayList<collectArticle> getCollectArticles() {
         return dataService.getAllArticlesByCollect();
     }
 
@@ -90,25 +93,6 @@ public class DataController {
         String decodedUrl = URLDecoder.decode(url, StandardCharsets.UTF_8);
         dataService.insertFeed(name,decodedUrl);
     }
-
-//    @ApiOperation("解析点中的rss源")
-//    @GetMapping("/parse")
-//    public ArrayList<RssFeed> parse() {
-//        return rssparser.getFeedArray();
-//    }
-//
-//    @ApiOperation("更新Rss源")
-//    @PutMapping("/update")
-//    public void update(@RequestBody RssFeed data) {
-//        rssparser.updateRss(data);
-//    }
-//
-//    @ApiOperation("删除指定id的Rss源")
-//    @DeleteMapping("/delete/{id}")
-//    public void deleteUser(@PathVariable int id) {
-//        rssparser.deleteRssById(id);
-//    }
-
 
     @ApiOperation("查看所有文章")
     @GetMapping("/getAllArticlesByTime")
@@ -142,10 +126,15 @@ public class DataController {
 
     @ApiOperation("通过收藏的PDF ID索取pdf文件")
     @GetMapping("/getPdfById")
-    public ResponseEntity<Resource> getPdfById(@RequestParam int id) throws MalformedURLException, FileNotFoundException {
+    public ResponseEntity<Resource> getPdfById(@RequestParam int id, @RequestParam String name) throws MalformedURLException, FileNotFoundException {
         try {
             String pdfPath = dataService.getPdfPath();
+            String upLoads = dataService.getUpLoadsPath();
             String filePath = pdfPath + id + ".pdf";
+            File file = new File(filePath);
+            if (!file.exists()) {
+                filePath= upLoads+name+".pdf";
+            }
             System.out.println(filePath);
             Path path = Paths.get(filePath);
             Resource resource = new UrlResource(path.toUri());
@@ -163,6 +152,12 @@ public class DataController {
         }
     }
 
+    @ApiOperation("上传PDF文件")
+    @RequestMapping("/uploadFile")
+    public collectArticle uploadFile(@RequestParam("file") MultipartFile file) {
+        return DataService.upLoadPDF(file);
+    }
+
 
     @CrossOrigin(origins = "http://localhost:8086")
     @ApiOperation("向RAG提出问题")
@@ -171,5 +166,6 @@ public class DataController {
         // @RequestBody注解用来绑定通过http请求中application/json类型上传的数据
         return RAG.queryHaystack(query);
     }
+
 }
 
