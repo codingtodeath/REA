@@ -102,7 +102,7 @@
   color: white; /* 文字颜色 */
   font-size: 16px;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease; /* 过渡效果 */
+  transition: background 0.3s ease-in-out, transform 0.3s ease-in-out; /* 过渡效果更流畅 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 阴影效果 */
 }
 
@@ -126,7 +126,7 @@
 
 .scale-enter-active,
 .scale-leave-active {
-  transition: transform 1s ease, opacity 1s ease;
+  transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out; /* 调整过渡时间和缓动函数 */
 }
 
 .scale-enter,
@@ -136,7 +136,7 @@
 }
 
 .slide-enter-active {
-  transition: transform 1.5s ease, opacity 1.5s ease; /* 设置持续时间为 1.5s */
+  transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out; /* 设置持续时间为 0.8s，缓动函数更流畅 */
 }
 
 .slide-enter,

@@ -256,6 +256,7 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .import-btn:hover {
@@ -276,9 +277,9 @@
   width: 30%;
   padding: 10px;
   border-left: 1px solid #ccc;
-  justify-content: center; /* 水平居中 */
   display: flex;
   flex-direction: column;
+  justify-content: center; /* 水平居中 */
   position: relative; /* 确保子元素可以相对于此定位 */
 }
 
@@ -300,12 +301,11 @@
   bottom: 20%;
   left: 50%; /* 从左侧开始居中 */
   transform: translateX(-50%); /* 通过 transform 让元素水平居中 */
-  right: 0;
+  width: 300px;
   display: flex;
   justify-content: space-between;
   padding: 10px;
   background-color: transparent;
-  width: 300px;
   z-index: 999;
 }
 
@@ -317,7 +317,7 @@ input[type="text"] {
   border: 1px solid transparent;
   border-radius: 20px;
   box-shadow: 0 0 10px #42b983;
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 input[type="text"]:hover {
@@ -327,12 +327,11 @@ input[type="text"]:hover {
 
 .submit-btn {
   height: 40px;
-  padding: 2px 0px 0px 10px;
+  padding: 2px 0 0 10px;
   background-color: transparent;
   border: none;
   cursor: pointer;
-  transform: scale(1);
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s ease;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
@@ -341,16 +340,16 @@ input[type="text"]:hover {
 }
 
 .display-place {
-    border: 1px solid #ccc; /* 边框样式 */
-    width: 100%; /* 根据需要设置宽度 */
-    height: 100%; /* 设置高度 */
-    overflow: auto; /* 支持滚动 */
-    position: relative; /* 相对定位 */
+  border: 1px solid #ccc; /* 边框样式 */
+  width: 100%; /* 根据需要设置宽度 */
+  height: 100%; /* 设置高度 */
+  overflow: auto; /* 支持滚动 */
+  position: relative; /* 相对定位 */
 }
 
 .pdf-container {
-    display: flex;
-    flex-direction: column; /* 垂直排列 */
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
 }
 
 .pdf-canvas {
