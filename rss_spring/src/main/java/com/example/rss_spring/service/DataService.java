@@ -82,6 +82,7 @@ public class DataService {
         try {
             parseFeed = new SyndFeedInput().build(new XmlReader(new URL(url)));
         } catch (Exception e) {
+            System.out.println("订阅失败");
             return;
         }
         List<SyndEntry> list = parseFeed.getEntries();
