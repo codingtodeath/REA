@@ -23,8 +23,6 @@ export default {
 }
 </script>
 
-
-
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -47,7 +45,6 @@ nav {
 
     &.router-link-exact-active {
       -webkit-tap-highlight-color: transparent; //清除蓝框
-      text-decoration: none;
       color: #42b983;
     }
   }
@@ -60,11 +57,11 @@ nav {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-image: linear-gradient(to right, #41ffa9, rgba(79, 168, 252, 0.6));
-  margin: 20px 10px 0px 10px;
+  margin: 20px 10px 0;
   text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2); //文本阴影
 }
+
 body {
-  background: rgb(244, 189, 255);
   background: linear-gradient(
     90deg,
     rgb(183, 180, 255) 0%,
@@ -81,7 +78,7 @@ body::-webkit-scrollbar {
 
 body::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #c4ffe4;
 }
 
@@ -91,4 +88,3 @@ body::-webkit-scrollbar-thumb {
   font-size: 13px;
 }
 </style>
-

@@ -1,27 +1,38 @@
 <template>
-  <div class="Newest">
-    <div class="wrapper" v-for="(item, index) in Obj" :key="index">
+  <div class="newest">
+    <div class="wrapper" v-for="(item, index) in obj" :key="item.id">
       <div class="container">
         <!-- 使用 transition 组件添加切换动画 -->
         <div @click="handleClick(index)" class="horizontal-container">
           <transition name="scale" mode="out-in">
-          <DescriptionList v-if="itemDescript[index] && !itemVisibility[index]"
-            :description="description[index]"
-          />
-        </transition>
-        <transition name="scale" mode="out-in">
-          <component
-            :is="itemVisibility[index] ? 'ArticleList' : 'ContentList'"
-            :Obj="item"
-          />
-        </transition>
+            <DescriptionList
+              v-if="itemDescript[index] && !itemVisibility[index]"
+              :description="description[index]"
+            />
+          </transition>
+          <transition name="scale" mode="out-in">
+            <component
+              :is="itemVisibility[index] ? 'ArticleList' : 'ContentList'"
+              :obj="item"
+            />
+          </transition>
         </div>
-        <transition name="slide" mode="out-in"> <!-- 添加 transition 组件 -->
+        <transition name="slide" mode="out-in">
           <div class="button-container" v-if="!itemVisibility[index]">
-              <button class="styled-button" @click="openOriginal(item)" >跳转原文</button>
-              <button :class="itemCollect[index]==1 ? 'styled-button-another':'styled-button'"  @click="collectItem(item,index)" >收藏</button>
-              <button class="styled-button" @click="collapseContent(index)">收起</button>
-              <button :class="itemDescript[index]==1 ? 'styled-button-another':'styled-button'" @click="llmDescription(index)">摘要</button>
+            <button class="styled-button" @click="openOriginal(item)">跳转原文</button>
+            <button
+              :class="itemCollect[index] === 1 ? 'styled-button-another' : 'styled-button'"
+              @click="collectItem(item, index)"
+            >
+              收藏
+            </button>
+            <button class="styled-button" @click="collapseContent(index)">收起</button>
+            <button
+              :class="itemDescript[index] === 1 ? 'styled-button-another' : 'styled-button'"
+              @click="llmDescription(index)"
+            >
+              摘要
+            </button>
           </div>
         </transition>
       </div>
@@ -29,12 +40,34 @@
   </div>
 </template>
 
-<style>
+<style scoped>
+.newest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 20px 0;
+  width: 80%;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin: 0 200px 20px 180px;
+}
+
 .horizontal-container {
   display: flex;
-  align-items: center; /* 垂直方向居中对齐 */
-  justify-content: flex-start; /* 左对齐，可根据需求修改 */
-  align-items: flex-start;
+  align-items: flex-start; /* 垂直方向居中对齐 */
+  justify-content: flex-start; /* 左对齐 */
   gap: 16px; /* 元素之间的间距 */
   flex-wrap: nowrap; /* 禁止子元素换行 */
 }
@@ -51,58 +84,21 @@
   max-width: 60%; /* 可选：限制 Component 的宽度 */
 }
 
-.slide-enter-active {
-  transition: transform 1.5s ease, opacity 1.5s ease; /* 设置持续时间为 2s */
-}
-.slide-enter, .slide-leave-to {
-  transform: translateY(30px); /* 向下移动 30 像素 */
-  opacity: 0; /* 初始透明度为 0 */
-}
-.scale-enter-active {
-  transition: transform 1s ease, opacity 1s ease; /* 将持续时间设置为 1s */
-}
-.scale-enter {
-  transform: scale(0); /* 缩放至 0 */
-  opacity: 0; /* 透明度设为 0 */
-}
-.scale-leave-to {
-  transform: scale(0); /* 缩放至 0 */
-  opacity: 0; /* 透明度设为 0 */
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* 使内容靠左对齐 */
-  margin: auto; /* 确保整体居中并有间隔 */
-  width: 100%;
-}
-.container {
-  position: relative; /* 设置为相对定位 */
-  display: flex; /* 使用flex布局 */
-  flex-direction: row; /* 子元素横向排列 */
-  align-items: flex-start; /* 对齐方式，确保子元素从顶部开始 */
-
-  margin-left: 180px;
-  margin-right: 200px;
-}
-
-  .button-container {
+.button-container {
   position: absolute;
   display: flex;
   flex-direction: column; /* 设置为纵向排列 */
-  justify-content: flex-end; /* 按钮向右对齐 */
   gap: 30px; /* 按钮间距 */
   width: 150px; /* 让按钮容器占满宽度 */
   top: 70px; /* 适当调整顶部位置 */
   right: -170px; /* 适当调整右侧位置 */
 }
-  
-  .styled-button {
+
+.styled-button,
+.styled-button-another {
   padding: 10px 20px;
   border: none;
   border-radius: 5px; /* 圆角 */
-  background: linear-gradient(135deg, #6e7efc, #4a90e2); /* 渐变背景 */
   color: white; /* 文字颜色 */
   font-size: 16px;
   cursor: pointer;
@@ -110,16 +106,12 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 阴影效果 */
 }
 
-  .styled-button-another {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px; /* 圆角 */
+.styled-button {
+  background: linear-gradient(135deg, #6e7efc, #4a90e2); /* 渐变背景 */
+}
+
+.styled-button-another {
   background: linear-gradient(135deg, #ee4c62, #f01154); /* 渐变背景 */
-  color: rgb(255, 255, 255); /* 文字颜色 */
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease; /* 过渡效果 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 阴影效果 */
 }
 
 .styled-button:hover {
@@ -131,144 +123,127 @@
   transform: translateY(2px); /* 点击时下沉 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 点击时减少阴影 */
 }
+
+.scale-enter-active,
+.scale-leave-active {
+  transition: transform 1s ease, opacity 1s ease;
+}
+
+.scale-enter,
+.scale-leave-to {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.slide-enter-active {
+  transition: transform 1.5s ease, opacity 1.5s ease; /* 设置持续时间为 1.5s */
+}
+
+.slide-enter,
+.slide-leave-to {
+  transform: translateY(30px); /* 向下移动 30 像素 */
+  opacity: 0; /* 初始透明度为 0 */
+}
 </style>
 
-  <script>
-  // @ 是 /src 的别名
-  import ArticleList from '@/components/ArticleList.vue'
-  import ContentList from '@/components/ContentList.vue'
-  import DescriptionList from '@/components/DescriptionList.vue';
-  import axios from 'axios'
-  
-  export default {
-    name: 'ArticleView',
-    components: {
-      ArticleList,
-      ContentList,
-      DescriptionList
+<script>
+import ArticleList from '@/components/ArticleList.vue'
+import ContentList from '@/components/ContentList.vue'
+import DescriptionList from '@/components/DescriptionList.vue'
+import axios from 'axios'
+
+export default {
+  name: 'ArticleView',
+  components: {
+    ArticleList,
+    ContentList,
+    DescriptionList
+  },
+  data() {
+    return {
+      obj: [],
+      itemVisibility: [],
+      itemCollect: [],
+      itemDescript: [],
+      description: []
+    }
+  },
+  methods: {
+    getList() {
+      axios.get('http://localhost:8087/getAllArticlesByTime')
+        .then(res => {
+          this.obj = res.data.map((item, index) => ({
+            ...item,
+            id: item.id || index
+          }))
+          this.obj.forEach((_, index) => {
+            this.$set(this.itemVisibility, index, true)
+            this.$set(this.itemCollect, index, this.obj[index].collect)
+            this.$set(this.itemDescript, index, false)
+            this.$set(this.description, index, '')
+          })
+          console.log(this.obj)
+        })
+        .catch(error => {
+          this.$message({
+            message: '获取页面内容失败！',
+            type: 'error',
+            duration: 2000
+          })
+          console.error("获取排行出错！", error)
+        })
     },
-  
-    data() {
-      return {
-        Obj: [],
-        itemVisibility: [],
-        itemCollect: [],
-        itemDescript: [],
-        description: []
-      }
+    handleClick(index) {
+      this.$set(this.itemVisibility, index, !this.itemVisibility[index])
+      console.log('Clicked index:', index)
     },
-  
-    // computed会缓存结果，methods每次都会重新计算
-    methods: {
-      getList() {
-        let list = [];
-        let newObjects = {};
-  
-        axios.get('http://localhost:8087/getAllArticlesByTime')
+    collapseContent(index) {
+      this.$set(this.itemVisibility, index, true)
+    },
+    openOriginal(item) {
+      window.open(item.url, '_blank')
+    },
+    llmDescription(index) {
+      const toggle = !this.itemDescript[index]
+      this.$set(this.itemDescript, index, toggle)
+      if (toggle) {
+        axios.get(`http://localhost:8087/getArticleLLMById?id=${this.obj[index].id}`)
           .then(res => {
-            list = res.data;
-  
-            for (let i = 0; i < list.length; i++) {
-              newObjects[i] = list[i];
-              this.itemVisibility[i] = true;
-              this.itemCollect[i]=list[i].collect;
-              this.itemDescript[i]=0;
-              this.description[i]="";
-            }
-            console.log(newObjects);
-            this.Obj = newObjects;
+            this.$set(this.description, index, res.data)
+            console.log("Description:", this.description)
           })
           .catch(error => {
             this.$message({
-              message: '获取页面内容失败！',
+              message: '获取内容失败！',
               type: 'error',
               duration: 2000
-            });
-            console.log("获取排行出错！")
-            console.error(error);
-          });
-      },
-      trans(index) {
-        this.$set(this.itemVisibility, index, !this.itemVisibility[index]);
-      },
-
-      handleClick(index) {
-        console.log('Clicked index:', index);
-        // 当 ArticleList 被点击时，更新 currentView 为 'user'
-        // if(this.itemVisibility[index]){
-        //   this.itemVisibility[index] = false;
-        // }
-        // else{
-        //   this.itemVisibility[index] = true;
-        // }
-        if(this.itemVisibility[index]){
-          this.$set(this.itemVisibility, index, !this.itemVisibility[index]);
+            })
+            console.error("获取内容出错！", error)
+          })
+      }
+    },
+    collectItem(item, index) {
+      const newCollect = this.itemCollect[index] === 1 ? 0 : 1
+      this.$set(this.itemCollect, index, newCollect)
+      console.log(newCollect ? "收藏" : "取消收藏")
+      axios.get('http://localhost:8087/updateArticleCollect', {
+        params: {
+          id: item.id,
+          collect: newCollect
         }
-      },
-      handleCollapse(index) {
-      // 收起 ContentList，切换回 ArticleList
-      this.$set(this.itemVisibility, index, true);
-      console.log("shouqi");
-    },
-    openOriginal(item) {
-      // 使用 URL 打开新选项卡
-      window.open(item.url, '_blank');
-    },
-    collapseContent(index) {
-      this.$set(this.itemVisibility, index, true);
-    },
-    llmDescription(index){
-      this.$set(this.itemDescript,index , !this.itemDescript[index]);
-      if(this.itemDescript[index]){
-        axios
-        .get(`http://localhost:8087/getArticleLLMById?id=${this.Obj[index].id}`)
-        .then(res => {
-          this.$set(this.description,index , res.data);
-          console.log("111",this.description);
+      })
+      .catch(error => {
+        this.$message({
+          message: '收藏设置失败！',
+          type: 'error',
+          duration: 2000
         })
-        .catch(error => {
-            this.$message({
-            message: '获取内容失败！',
-            type: 'error',
-            duration: 2000
-            });
-            console.error("获取内容出错！", error);
-        });
-      }
-    },
-    collectItem(item, index){
-      if(this.itemCollect[index]==1){
-        console.log("取消收藏");
-        this.$set(this.itemCollect,index , 0);
-        console.log("取消收藏成功");
-      }
-      else{
-        console.log("收藏");
-        this.$set(this.itemCollect,index, 1);
-      }
-      axios
-        .get(`http://localhost:8087/updateArticleCollect`,{
-          params: {
-            id: item.id,
-            collect: this.itemCollect[index] // 假设你有一个collect属性
-          }
-        })
-        .then()
-        .catch(error => {
-          this.$message({
-            message: '收藏设置失败！',
-            type: 'error',
-            duration: 2000
-          });
-          console.error("收藏设置出错！", error);
-        });
+        console.error("收藏设置出错！", error)
+      })
     }
-    },
-    created() {
-      this.getList();
-    },
-
-  
+  },
+  created() {
+    this.getList()
   }
-  </script>
-  
+}
+</script>
