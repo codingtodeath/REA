@@ -2,10 +2,10 @@
   <div class="UserList" @click="handleClick">
     <div class="box" :class="{ 'delete-mode': isDeleteMode }">
       <div class="box1">
-        <div class="name">{{name}}</div>
+        <div class="name">{{ name }}</div>
       </div>
       <div class="box2">
-        <div class="url">{{url}}</div>
+        <div class="url">{{ url }}</div>
       </div>
     </div>
   </div>
@@ -17,6 +17,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .box {
@@ -25,28 +26,28 @@
   box-shadow: 2px 2px 4px #ddd;
   padding: 10px;
   display: flex;
-  flex-direction: column; //将 flex 子元素沿竖直方向排列
-  align-items: center; //将 flex 子元素在纵轴上居中对齐
+  flex-direction: column; // 将 flex 子元素沿竖直方向排列
+  align-items: center; // 将 flex 子元素在纵轴上居中对齐
   margin: 5px;
-  width: 500px;
-  transition: all 0.3s ease; //面板放大
+  width: 100%;
+  max-width: 500px;
+  transition: transform 0.3s ease; // 优化过渡效果，仅针对缩放
 }
 
 .box:hover {
-  transform: scale(1.04); //面板放大
+  transform: scale(1.04); // 面板放大
 }
 
 .box1 {
   width: 100%;
-  float: left;
-  margin: 5px;
+  margin: 5px 0;
 }
 
 .name {
   flex: 1;
   text-align: center;
   font-size: 20px;
-  //font-family:wpyt;
+  // font-family:wpyt;
   width: 100%;
   height: 25px;
   display: flex;
@@ -58,6 +59,8 @@
 .box2 {
   width: 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .url {
@@ -66,8 +69,11 @@
   width: 120px;
   height: 20px;
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+/* 如果未来需要使用 .likes 和 .img-btn，可以保留样式 */
 .likes {
   text-align: center;
   font-size: 14px;
@@ -82,37 +88,70 @@
 .img-btn {
   width: 16px;
   height: 16px;
-  transition: all 0.3s ease; // 设置按钮元素的过渡效果
+  transition: transform 0.3s ease; // 设置按钮元素的过渡效果
 }
 
 .box.delete-mode {
   border-color: red;
   background-color: #ffe6e6;
 }
+
+/* 响应式设计 */
+@media (max-width: 400px) {
+  .UserList {
+    flex-direction: column;
+  }
+
+  .box {
+    max-width: 80px;
+    padding: 8px;
+  }
+
+  .name {
+    font-size: 16px;
+    height: 20px;
+  }
+
+  .url {
+    font-size: 12px;
+    width: 100px;
+    height: 18px;
+  }
+}
 </style>
 
-
 <script>
-//import axios from 'axios'
+// import axios from 'axios'
 
 export default {
   name: 'UserList',
   props: {
-    Obj: Object,
-    isDeleteMode: Boolean
+    Obj: {
+      type: Object,
+      required: true
+    },
+    isDeleteMode: {
+      type: Boolean,
+      default: false
+    }
   },
-  data() {
-    return {
-      //imagePath: require("@/assets/点赞-no.png"),
-      name: this.Obj.name,
-      url: this.Obj.url,
-      id: this.Obj.id
-    };
+  computed: {
+    name() {
+      return this.Obj.name;
+    },
+    url() {
+      return this.Obj.url;
+    },
+    id() {
+      return this.Obj.id;
+    }
   },
   created() {
+    console.log("UserList component created");
     // if (localStorage.getItem(`isLiked${this.Obj.id}`)) {
     //   this.imagePath = require("@/assets/点赞-yes.png");
     // }
+    console.log("UserList initialized");
   },
   methods: {
     handleClick() {
@@ -120,62 +159,58 @@ export default {
         this.$emit('deleteFeed', this.Obj);
       }
     }
-  //   toggleImage() {
-  //     // 判断是否点赞过
-  //     if (this.imagePath === require("@/assets/点赞-no.png")) {
-
-  //       // 获取按钮元素
-  //       const imgBtn = this.$el.querySelector('.img-btn');
-  //       // 给按钮元素应用缩放和旋转的样式
-  //       imgBtn.style.transform = 'scale(1.2) rotate(-10deg)';
-  //       // 设置计时器，在 300 毫秒之后给按钮元素应用新的样式
-  //       setTimeout(() => {
-  //         imgBtn.style.transform = 'scale(1) rotate(10deg)';
-  //         setTimeout(() => {
-  //           imgBtn.style.transform = 'scale(1) rotate(0deg)';
-  //         }, 300);
-  //       }, 300);
-
-  //       this.likes++;
-
-  //       // 将图片替换为已点赞的图片
-  //       this.imagePath = require("@/assets/点赞-yes.png");
-  //       // 将已点赞的状态存入 localStorage
-  //       localStorage.setItem(`isLiked${this.Obj.id}`, true);
-
-  //       //向服务器发送发送put请求
-  //       axios.put(`http://localhost:8087/increaseLikesById/${this.Obj.id}`)
-  //         .then(res => {
-
-  //           console.log(res.data);
-
-  //         })
-  //         .catch(error => {
-  //           console.log("点赞出错！")
-  //           console.error(error);
-  //         });
-
-  //     } else {
-
-  //       this.likes--;
-
-  //       // 否则将图片替换为未点赞的图片
-  //       this.imagePath = require("@/assets/点赞-no.png");
-  //       // 并且删除已点赞的状态
-  //       localStorage.removeItem(`isLiked${this.Obj.id}`);
-
-  //       // 向服务器发送发送put请求
-  //       axios.put(`http://localhost:8087/decreaseLikesById/${this.Obj.id}`)
-  //         .then(res => {
-  //           console.log(res.data);
-  //         })
-  //         .catch(error => {
-  //           console.log("取消点赞出错！")
-  //           console.error(error);
-  //         });
-  //     }
-  //   }
-   }
-
+    // toggleImage() {
+    //   // 判断是否点赞过
+    //   if (this.imagePath === require("@/assets/点赞-no.png")) {
+    //     // 获取按钮元素
+    //     const imgBtn = this.$el.querySelector('.img-btn');
+    //     // 给按钮元素应用缩放和旋转的样式
+    //     imgBtn.style.transform = 'scale(1.2) rotate(-10deg)';
+    //     // 设置计时器，在 300 毫秒之后给按钮元素应用新的样式
+    //     setTimeout(() => {
+    //       imgBtn.style.transform = 'scale(1) rotate(10deg)';
+    //       setTimeout(() => {
+    //         imgBtn.style.transform = 'scale(1) rotate(0deg)';
+    //       }, 300);
+    //     }, 300);
+    //
+    //     this.likes++;
+    //
+    //     // 将图片替换为已点赞的图片
+    //     this.imagePath = require("@/assets/点赞-yes.png");
+    //     // 将已点赞的状态存入 localStorage
+    //     localStorage.setItem(`isLiked${this.Obj.id}`, true);
+    //
+    //     // 向服务器发送PUT请求
+    //     axios.put(`http://localhost:8087/increaseLikesById/${this.Obj.id}`)
+    //       .then(res => {
+    //         console.log(res.data);
+    //       })
+    //       .catch(error => {
+    //         console.log("点赞出错！");
+    //         console.error(error);
+    //       });
+    //
+    //   } else {
+    //
+    //     this.likes--;
+    //
+    //     // 否则将图片替换为未点赞的图片
+    //     this.imagePath = require("@/assets/点赞-no.png");
+    //     // 并且删除已点赞的状态
+    //     localStorage.removeItem(`isLiked${this.Obj.id}`);
+    //
+    //     // 向服务器发送PUT请求
+    //     axios.put(`http://localhost:8087/decreaseLikesById/${this.Obj.id}`)
+    //       .then(res => {
+    //         console.log(res.data);
+    //       })
+    //       .catch(error => {
+    //         console.log("取消点赞出错！");
+    //         console.error(error);
+    //       });
+    //   }
+    // }
+  }
 }
 </script>

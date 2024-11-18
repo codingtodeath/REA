@@ -9,6 +9,8 @@
     <img
       src="../assets/send.png"
       class="submit-btn"
+      @click="submit"
+      alt="发送按钮"
     />
   </div>
 </template>
@@ -17,16 +19,15 @@
 .InputText {
   position: fixed;
   bottom: 10px;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px;
   background-color: transparent;
   width: 300px;
-  margin: 0 auto;
-  //设置 z-index 值为 999,显示为最顶部
-  z-index: 999;
+  z-index: 999; // 设置 z-index 值为 999,显示为最顶部
 }
 
 input[type="text"] {
@@ -37,7 +38,7 @@ input[type="text"] {
   border: 1px solid transparent;
   border-radius: 20px;
   box-shadow: 0 0 10px #42b983;
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 input[type="text"]:hover {
@@ -47,17 +48,35 @@ input[type="text"]:hover {
 
 .submit-btn {
   height: 40px;
-  padding: 2px 0px 0px 10px;
+  padding: 2px 0 0 10px;
   background-color: transparent;
   border: none;
   cursor: pointer;
   transform: scale(1);
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 .submit-btn:hover {
   transform: scale(1.2);
+}
+
+/* 响应式设计 */
+@media (max-width: 400px) {
+  .InputText {
+    width: 90%;
+    padding: 8px;
+  }
+
+  input[type="text"] {
+    height: 35px;
+    padding: 0 8px;
+  }
+
+  .submit-btn {
+    height: 35px;
+    padding: 2px 0 0 8px;
+  }
 }
 </style>
 
@@ -67,7 +86,6 @@ import axios from 'axios'
 export default {
   name: 'InputText',
 
-  // 定义数据
   data() {
     return {
       isAnimating: false, // 用于标识动画是否正在播放
@@ -77,15 +95,12 @@ export default {
   methods: {
     // 定义提交方法
     submit() {
-
       // 如果动画正在播放，直接返回
-      if (this.isAnimating)
-        return;
+      if (this.isAnimating) return;
 
-      //向服务器发送发送post请求
+      // 向服务器发送发送post请求
       axios.post(`http://localhost:8087/Add/${this.inputValue}`)
         .then(res => {
-
           console.log(res.data);
           this.inputValue = '';
 
@@ -102,13 +117,13 @@ export default {
             duration: 2000 // 自动关闭延迟时间，单位毫秒
           });
 
-          console.log("发送信息出错！")
+          console.log("发送信息出错！");
           console.error(error);
         });
 
       this.isAnimating = true; // 标记动画正在播放
       // 获取提交按钮元素
-      const btn = this.$el.querySelector(".submit-btn");
+      const btn = this.$refs.submitBtn;
       // 记录提交按钮的原始 transform 值
       const originalTransform = btn.style.transform;
       // 设置提交按钮的 transform 值，使其向右上方移动
@@ -121,12 +136,7 @@ export default {
         // 标记动画已经播放完毕
         this.isAnimating = false;
       }, 500);
-
     }
-  },
-  mounted() {
-    // 在组件挂载完成后，给提交按钮元素绑定 click 事件
-    this.$el.querySelector(".submit-btn").addEventListener("click", this.submit);
   }
 };
 </script>
