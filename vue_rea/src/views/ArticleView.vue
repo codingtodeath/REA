@@ -126,7 +126,7 @@
 
 .scale-enter-active,
 .scale-leave-active {
-  transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out; /* 调整过渡时间和缓动函数 */
+  transition: transform 1s ease, opacity 1s ease;
 }
 
 .scale-enter,
@@ -136,7 +136,7 @@
 }
 
 .slide-enter-active {
-  transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out; /* 设置持续时间为 0.8s，缓动函数更流畅 */
+  transition: transform 1.5s ease, opacity 1.5s ease; /* 设置持续时间为 1.5s */
 }
 
 .slide-enter,
