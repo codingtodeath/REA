@@ -15,3 +15,8 @@ spring.datasource.username = your_user_name
 
 spring.datasource.password = your_password
 spring.datasource.driver-class-name = com.mysql.cj.jdbc.Driver
+
+spring.servlet.multipart.enabled=true
+
+spring.servlet.multipart.max-file-size=100MB
+spring.servlet.multipart.max-request-size=100MB
